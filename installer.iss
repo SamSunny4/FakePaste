@@ -28,9 +28,6 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 
 ; Visual settings
-SetupIconFile=assets\icon.ico
-WizardImageFile=assets\wizard.bmp
-WizardSmallImageFile=assets\wizard_small.bmp
 
 ; Uninstall
 UninstallDisplayName={#MyAppName}
@@ -40,7 +37,7 @@ UninstallDisplayIcon={app}\{#MyAppExeName}
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 Name: "portablemode"; Description: "Portable mode (store settings next to exe)"; GroupDescription: "Options:"; Flags: unchecked
 
 [Files]
