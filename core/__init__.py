@@ -1,0 +1,1 @@
+# FakePaste Core Module
