@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary Meta Tags -->
+  <title>FakePaste — Realistic Human-Like Typing Simulator for Windows</title>
+  <meta name="title" content="FakePaste — Realistic Human-Like Typing Simulator for Windows">
+  <meta name="description" content="Simulate natural human-like typing with realistic speed variations, thinking pauses, and physical QWERTY typo self-correction. Free, open-source Windows utility.">
+  <meta name="keywords" content="human typing simulator, auto typer with typos, realistic typing bot, bypass velocity filter, typing cadence simulator, pynput windows typing, fake paste, natural keystroke simulator">
+  <meta name="author" content="SamSunny4">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://samsunny4.github.io/FakePaste/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://samsunny4.github.io/FakePaste/">
+  <meta property="og:title" content="FakePaste — Realistic Human-Like Typing Simulator for Windows">
+  <meta property="og:description" content="Simulate natural human-like typing with realistic speed variations, thinking pauses, and physical QWERTY typo self-correction. Free and open source.">
+  <meta property="og:image" content="https://samsunny4.github.io/FakePaste/assets/og-image.jpg">
+  <meta property="og:site_name" content="FakePaste">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://samsunny4.github.io/FakePaste/">
+  <meta name="twitter:title" content="FakePaste — Realistic Human-Like Typing Simulator for Windows">
+  <meta name="twitter:description" content="Simulate natural human-like typing with realistic speed variations, thinking pauses, and physical QWERTY typo self-correction.">
+  <meta name="twitter:image" content="https://samsunny4.github.io/FakePaste/assets/og-image.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+
+  <!-- Google Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./styles.css">
+
+  <!-- Structured Data: SoftwareApplication Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "FakePaste",
+    "operatingSystem": "Windows 10, Windows 11",
+    "applicationCategory": "UtilitiesApplication",
+    "description": "Realistic human-like typing simulator for Windows with speed variation, thinking pauses, and natural typo self-correction.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "SamSunny4",
+      "url": "https://github.com/SamSunny4"
+    },
+    "downloadUrl": "https://github.com/SamSunny4/FakePaste/releases",
+    "featureList": [
+      "10-200 WPM Adjustable Speed",
+      "QWERTY Adjacency Typo Simulation & Self-Correction",
+      "Thinking Delays & Punctuation Breathing Pauses",
+      "Global Emergency ESC Abort Hotkey",
+      "Session Analytics & Live WPM Counter",
+      "Dark Mode Desktop Interface"
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: FAQPage Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does FakePaste differ from standard auto-typers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Standard auto-typers output keystrokes at rigid clock intervals, immediately triggering automated velocity filters and anti-cheat heuristics. FakePaste models human neuromuscular latency using gaussian timing distributions, cognitive pauses at punctuation boundaries, and realistic physical QWERTY typo generation with automatic backspace corrections."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does FakePaste require Administrator privileges?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. FakePaste runs entirely in standard user space for all normal desktop applications, text editors, browser forms, and terminals. Elevated privileges are only needed if typing into protected system administrative consoles."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I safely stop typing during a session?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "FakePaste installs a global low-level keyboard hook using pynput. Pressing the physical ESC key halts all keystroke simulation in less than 1 millisecond, even if the FakePaste window is minimized or not in focus."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Ambient Backdrop -->
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow"></div>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#" class="brand-link" aria-label="FakePaste Home">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="4"></rect>
+            <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 16h8"></path>
+          </svg>
+        </div>
+        <span class="brand-text">FakePaste</span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li><a href="#simulator" class="nav-link">Interactive Studio</a></li>
+          <li><a href="#how-it-works" class="nav-link">Neuromuscular Engine</a></li>
+          <li><a href="#comparison" class="nav-link">Comparison</a></li>
+          <li><a href="#presets" class="nav-link">Presets</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Mechanical Sound Synthesizer Toggle -->
+        <button id="soundToggle" class="btn-sound" title="Toggle Mechanical Key Sound" aria-label="Toggle Mechanical Key Sound">
+          <div class="sound-waves">
+            <span class="sound-wave-bar"></span>
+            <span class="sound-wave-bar"></span>
+            <span class="sound-wave-bar"></span>
+          </div>
+          <span class="sound-label">Audio: OFF</span>
+        </button>
+
+        <!-- GitHub Link -->
+        <a href="https://github.com/SamSunny4/FakePaste" target="_blank" rel="noopener noreferrer" class="btn-github">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>Star</span>
+        </a>
+
+        <!-- Primary CTA -->
+        <a href="#download" class="btn-primary">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <!-- Left: Pitch & Value Proposition -->
+        <div class="hero-content">
+          <div class="pill-badge">
+            <span class="status-dot"></span>
+            <span>Windows 10 / 11 Native · Version 1.0.0</span>
+          </div>
+
+          <h1 class="hero-title">
+            Typing that looks, breathes, and <span class="hero-title-accent">hesitates like a human.</span>
+          </h1>
+
+          <p class="hero-lead">
+            Standard auto-typers emit synthetic clock pulses that trigger anti-cheat, Proctor checks, and velocity filters. FakePaste reproduces human neuromuscular cadence—variable keystroke latency, thinking pauses, and natural QWERTY typo corrections.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#download" class="btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Standalone EXE</span>
+            </a>
+
+            <a href="#simulator" class="btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+              </svg>
+              <span>Test Live in Browser</span>
+            </a>
+          </div>
+
+          <!-- Quick Telemetry Row -->
+          <div class="hero-metrics-strip">
+            <div>
+              <div class="metric-item-label">Speed Range</div>
+              <div class="metric-item-value tabular">10–200 WPM</div>
+            </div>
+            <div>
+              <div class="metric-item-label">Natural Cadence</div>
+              <div class="metric-item-value tabular">97% Accuracy</div>
+            </div>
+            <div>
+              <div class="metric-item-label">Emergency Abort</div>
+              <div class="metric-item-value tabular">&lt; 1ms (ESC)</div>
+            </div>
+            <div>
+              <div class="metric-item-label">License</div>
+              <div class="metric-item-value tabular">MIT Free</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Studio & Live Recording -->
+        <div id="simulator" class="studio-container">
+          <!-- Top Studio Bar -->
+          <div class="studio-topbar">
+            <div class="studio-modes">
+              <button class="mode-tab active" data-mode="interactive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>Live Sandbox</span>
+              </button>
+              <button class="mode-tab" data-mode="recording">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                </svg>
+                <span>Watch Demo Walkthrough</span>
+              </button>
+              <button class="mode-tab" data-mode="video">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+                <span>Full Session Video</span>
+              </button>
+            </div>
+
+            <div class="studio-status-tag">
+              <span class="status-dot"></span>
+              <span>ENGINE READY</span>
+            </div>
+          </div>
+
+          <!-- Video Recording View (Shows when in video mode) -->
+          <div id="videoContainer" class="video-recording-wrap" style="display: none;">
+            <div class="video-overlay-header">
+              <span class="status-dot"></span>
+              <span>Actual Session Recording — FakePaste Live Typing Demonstration</span>
+            </div>
+            <img src="./assets/fakepaste-demo-recording.webp" alt="FakePaste typing simulator actual recorded demo" class="demo-recording-media">
+          </div>
+
+          <!-- Dual Window Simulator Grid -->
+          <div id="dualGrid" class="studio-dual-grid">
+            <!-- Window A: FakePaste Control UI -->
+            <div class="fakepaste-window">
+              <div class="window-titlebar">
+                <div class="window-dots">
+                  <span class="window-dot close"></span>
+                  <span class="window-dot min"></span>
+                  <span class="window-dot max"></span>
+                </div>
+                <span>FakePaste v1.0 — Controller</span>
+                <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-cyan);">Qt6</span>
+              </div>
+
+              <div class="fakepaste-body">
+                <div>
+                  <div class="fp-input-label">
+                    <span>Text to Simulate</span>
+                    <span style="color: var(--text-muted);">Paste or type below</span>
+                  </div>
+                  <textarea id="fpTextarea" class="fp-textarea" placeholder="Paste your text here...">Realistic typing that passes velocity filters with ease.
+No robotic clock-ticks. Just human rhythm.</textarea>
+                </div>
+
+                <!-- Presets -->
+                <div>
+                  <div class="fp-input-label" style="margin-bottom: 0.35rem;">
+                    <span>Speed Preset Profile</span>
+                  </div>
+                  <div class="fp-presets-row">
+                    <button class="preset-chip" data-preset="slow">Slow (~25)</button>
+                    <button class="preset-chip active" data-preset="normal">Normal (~55)</button>
+                    <button class="preset-chip" data-preset="fast">Fast (~90)</button>
+                    <button class="preset-chip" data-preset="blazing">Blazing (~130)</button>
+                  </div>
+                </div>
+
+                <!-- Sliders -->
+                <div class="fp-controls-grid">
+                  <div class="fp-slider-group">
+                    <div class="fp-slider-header">
+                      <span>Base Speed</span>
+                      <span id="wpmVal" class="fp-slider-val tabular">55 WPM</span>
+                    </div>
+                    <input type="range" id="wpmRange" class="fp-range-input" min="15" max="180" value="55">
+                  </div>
+
+                  <div class="fp-slider-group">
+                    <div class="fp-slider-header">
+                      <span>Accuracy Level</span>
+                      <span id="accVal" class="fp-slider-val tabular">97%</span>
+                    </div>
+                    <input type="range" id="accRange" class="fp-range-input" min="80" max="100" value="97">
+                  </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div>
+                  <div class="fp-progress-wrap">
+                    <div id="progressFill" class="fp-progress-fill"></div>
+                  </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="fp-actions-row">
+                  <button id="btnStart" class="btn-fp-start">▶ Start Typing</button>
+                  <button id="btnStop" class="btn-fp-stop">⏹ Stop (ESC)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Window B: Simulated Target Application -->
+            <div class="target-window">
+              <div class="target-header">
+                <div class="target-tab">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                  <span>target_editor.txt</span>
+                </div>
+
+                <div id="focusTag" class="target-focus-state">Target Idle</div>
+              </div>
+
+              <!-- Countdown Overlay -->
+              <div id="countdownOverlay" class="countdown-overlay">
+                <div id="countdownNum" class="countdown-number tabular">3</div>
+                <div class="countdown-tip">Switching to target application window...</div>
+              </div>
+
+              <!-- Editor Surface with Live Typing -->
+              <div class="target-editor-body">
+                <span id="editorText" class="typed-text"><span class="typing-cursor"></span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Demo Timeline Bar (Visible when in recording mode) -->
+          <div id="recordingTimeline" class="recording-timeline-bar" style="display: none;">
+            <button id="btnPlayStep" class="btn-play-step" title="Replay Step Walkthrough">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+            <div class="timeline-track-wrap">
+              <div class="timeline-step-labels">
+                <span>1. Load Text</span>
+                <span>2. 3s Countdown</span>
+                <span>3. Focus Target</span>
+                <span>4. Typo &amp; Correct</span>
+                <span>5. Finished</span>
+              </div>
+              <div class="timeline-progress-track">
+                <div id="timelineFill" class="timeline-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Telemetry HUD Strip -->
+          <div class="studio-footer">
+            <div class="telemetry-cell">
+              <span class="telemetry-label">Current WPM</span>
+              <span id="statWpm" class="telemetry-value tabular">55</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">Effective Acc</span>
+              <span id="statAcc" class="telemetry-value tabular">97%</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">Characters</span>
+              <span id="statChars" class="telemetry-value tabular">0/0</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">Typos Fixed</span>
+              <span id="statTypos" class="telemetry-value tabular">0</span>
+            </div>
+            <div class="telemetry-cell">
+              <span class="telemetry-label">Elapsed Time</span>
+              <span id="statElapsed" class="telemetry-value tabular">0.0s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: HOW FAKEPASTE WORKS -->
+    <section id="how-it-works" class="section-padding">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Biometric Architecture</span>
+          <h2 class="section-title">How FakePaste Simulates Human Biology</h2>
+          <p class="section-subtitle">
+            Most typing software operates like an electrical oscillator: fixed intervals and zero variance. FakePaste replaces clock loops with a non-linear human neuromuscular latency pipeline.
+          </p>
+        </div>
+
+        <!-- 6-Stage Algorithm Cards -->
+        <div class="architecture-grid">
+          <!-- Card 1 -->
+          <div class="arch-card">
+            <div class="arch-step-num">Stage 01</div>
+            <div class="arch-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <h3 class="arch-card-title">Gaussian Keystroke Jitter</h3>
+            <p class="arch-card-desc">
+              Keystrokes are computed using a Box-Muller transform:
+              <br><code>t_delay = (60 / CPM) · (1 + Z · σ)</code>
+              Every character arrives with a distinct physical strike delay, preventing periodic clock detection.
+            </p>
+            <div class="arch-code-preview">core/typer.py:L86-L92</div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="arch-card">
+            <div class="arch-step-num">Stage 02</div>
+            <div class="arch-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 16h8"></path>
+              </svg>
+            </div>
+            <h3 class="arch-card-title">QWERTY Adjacency Matrix</h3>
+            <p class="arch-card-desc">
+              When humans mistype, their fingers slip to physically adjacent keys on the keyboard grid. FakePaste maps all 40+ key coordinates: typing <code>'d'</code> probabilistically slips to <code>s</code>, <code>e</code>, <code>r</code>, <code>f</code>, or <code>c</code>.
+            </p>
+            <div class="arch-code-preview">ADJACENT_KEYS = {'d': 'serfcx'}</div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="arch-card">
+            <div class="arch-step-num">Stage 03</div>
+            <div class="arch-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 14"></polyline>
+              </svg>
+            </div>
+            <h3 class="arch-card-title">Cognitive Realization Lag</h3>
+            <p class="arch-card-desc">
+              Real humans do not instantly backspace the millisecond an error happens. FakePaste simulates the 180ms–350ms neural feedback loop where the brain registers the typo before triggering hand recovery.
+            </p>
+            <div class="arch-code-preview">latency: 180ms - 320ms reaction</div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="arch-card">
+            <div class="arch-step-num">Stage 04</div>
+            <div class="arch-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                <line x1="18" y1="9" x2="12" y2="15"></line>
+                <line x1="12" y1="9" x2="18" y2="15"></line>
+              </svg>
+            </div>
+            <h3 class="arch-card-title">Backspace Correction Loop</h3>
+            <p class="arch-card-desc">
+              Upon recognizing an error, the engine simulates 1–2 rapid backspaces (using tactile backspace velocity), followed by a brief 100ms hesitation, and re-strikes the correct character.
+            </p>
+            <div class="arch-code-preview">_do_typo_sequence()</div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="arch-card">
+            <div class="arch-step-num">Stage 05</div>
+            <div class="arch-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+              </svg>
+            </div>
+            <h3 class="arch-card-title">Punctuation &amp; Syntax Breathing</h3>
+            <p class="arch-card-desc">
+              Typists hesitate at structural boundaries. FakePaste injects 150ms–600ms pauses at periods, commas, colons, and questions marks, plus 0.8s–2.0s rests at paragraph breaks.
+            </p>
+            <div class="arch-code-preview">punctuation_pause_min = 0.15s</div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="arch-card">
+            <div class="arch-step-num">Stage 06</div>
+            <div class="arch-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </div>
+            <h3 class="arch-card-title">Low-Level Kernel Intercept</h3>
+            <p class="arch-card-desc">
+              Powered by native <code>pynput</code> keyboard listener. Hitting the physical <code>ESC</code> key aborts simulation instantly from any window across the entire OS in under 1 millisecond.
+            </p>
+            <div class="arch-code-preview">utils/hotkeys.py: HotkeyManager</div>
+          </div>
+        </div>
+
+        <!-- Interactive Cadence Waveform Inspector -->
+        <div class="cadence-inspector-card">
+          <div class="cadence-grid">
+            <div>
+              <span class="section-tag">Interactive Analyzer</span>
+              <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: #fff; margin-bottom: 0.75rem;">
+                Millisecond Latency Waveform
+              </h3>
+              <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                Notice how the keystroke intervals oscillate non-linearly. The green dots highlight natural micro-hesitations. Adjust the WPM slider in the studio above to see this waveform dynamically re-sample!
+              </p>
+            </div>
+
+            <div class="cadence-waveform-wrap">
+              <canvas id="cadenceWaveform" class="waveform-canvas"></canvas>
+              <div class="waveform-legend">
+                <span>0ms (Instant)</span>
+                <span style="color: var(--accent-cyan);">● Mean Keystroke Delay</span>
+                <span style="color: var(--accent-emerald);">● Cognitive Hesitation Peaks</span>
+                <span>400ms (Max)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: COMPARISON TABLE -->
+    <section id="comparison" class="section-padding" style="background: var(--bg-base);">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Detection &amp; Performance</span>
+          <h2 class="section-title">FakePaste vs. Traditional Auto-Typers</h2>
+          <p class="section-subtitle">
+            Why automated scripts fail heuristic velocity checks and how physical simulation remains undetectable.
+          </p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Vector / Capability</th>
+                <th>Standard Auto-Typers &amp; Macros</th>
+                <th>FakePaste Biometric Simulator</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Keystroke Latency</strong></td>
+                <td><span class="badge-loser">✕ Fixed clock interval (e.g. 50ms)</span></td>
+                <td><span class="badge-winner">✓ Gaussian normal distribution with micro-jitter</span></td>
+              </tr>
+              <tr>
+                <td><strong>Typo Simulation</strong></td>
+                <td><span class="badge-loser">✕ None (100% mechanical perfection)</span></td>
+                <td><span class="badge-winner">✓ Realistic adjacent QWERTY slip &amp; backspace recovery</span></td>
+              </tr>
+              <tr>
+                <td><strong>Cognitive Pauses</strong></td>
+                <td><span class="badge-loser">✕ None (ignores punctuation &amp; words)</span></td>
+                <td><span class="badge-winner">✓ Word thinking pauses &amp; punctuation breathing</span></td>
+              </tr>
+              <tr>
+                <td><strong>Anti-Cheat / Proctor Flags</strong></td>
+                <td><span class="badge-loser">✕ Immediate flag for flat velocity signature</span></td>
+                <td><span class="badge-winner">✓ Indistinguishable from biological typing cadence</span></td>
+              </tr>
+              <tr>
+                <td><strong>Fail-Safe Emergency Stop</strong></td>
+                <td><span class="badge-loser">✕ Runaway loop; difficult to kill</span></td>
+                <td><span class="badge-winner">✓ Global physical ESC hotkey listener (&lt;1ms)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Runtime Footprint</strong></td>
+                <td><span class="badge-loser">✕ Complex browser extensions or runtimes</span></td>
+                <td><span class="badge-winner">✓ Standalone portable Windows EXE · Zero installation</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: PRESETS -->
+    <section id="presets" class="section-padding">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Tuned Profiles</span>
+          <h2 class="section-title">Calibrated Typing Presets</h2>
+          <p class="section-subtitle">
+            Pre-configured profiles tailored for different typing skill levels and scenarios.
+          </p>
+        </div>
+
+        <div class="preset-cards-grid">
+          <div class="preset-card">
+            <span class="section-tag">Hunt &amp; Peck</span>
+            <div class="preset-speed-tag tabular">25 <span>WPM</span></div>
+            <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem;">Slow Mode</h4>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">
+              Deliberate, careful keystrokes with pronounced thinking pauses (35% speed variation, 93% accuracy).
+            </p>
+          </div>
+
+          <div class="preset-card" style="border-color: var(--accent-cyan);">
+            <span class="section-tag" style="color: var(--accent-cyan);">Most Popular</span>
+            <div class="preset-speed-tag tabular" style="color: var(--accent-cyan);">55 <span>WPM</span></div>
+            <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem;">Normal Typist</h4>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">
+              Natural everyday typist rhythm with balanced punctuation pauses and occasional typos (25% variance, 97% accuracy).
+            </p>
+          </div>
+
+          <div class="preset-card">
+            <span class="section-tag">Experienced</span>
+            <div class="preset-speed-tag tabular">90 <span>WPM</span></div>
+            <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem;">Fast Mode</h4>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">
+              Confident, rapid typing pace suitable for programmers and writers (20% variance, 98% accuracy).
+            </p>
+          </div>
+
+          <div class="preset-card">
+            <span class="section-tag">Professional</span>
+            <div class="preset-speed-tag tabular">130 <span>WPM</span></div>
+            <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem;">Blazing Mode</h4>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">
+              Top-tier typing velocity with tight rhythm and minimal pauses (15% variance, 99% accuracy).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: FAQ ACCORDION -->
+    <section id="faq" class="section-padding" style="background: var(--bg-base);">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tag">Frequently Asked Questions</span>
+          <h2 class="section-title">Common Questions &amp; Answers</h2>
+          <p class="section-subtitle">Everything you need to know about safety, deployment, and simulation parameters.</p>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item open">
+            <button class="faq-question">
+              <span>How does FakePaste differ from regular macro auto-typers?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              Traditional typing macros inject text at rigid, constant microsecond intervals (e.g. 50ms per key) with zero variance. Automated velocity filters and proctoring surveillance flag this immediately as robotic. FakePaste uses a Gaussian randomized delay model, physical QWERTY adjacency typo injection, realistic backspacing, and cognitive hesitation pauses to mimic human neurobiology.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Do I need Administrator permissions to run FakePaste?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              No. FakePaste runs entirely in standard user space for all normal desktop applications, IDEs (VS Code, JetBrains), Slack, Word, Google Docs, and browsers. Administrator rights are only needed if typing into privileged system consoles (such as elevated PowerShell windows).
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How does the Emergency Stop work?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              FakePaste implements a low-level keyboard listener via the <code>pynput</code> library. At any point while typing is in progress, pressing the physical <code>ESC</code> key halts typing in under 1 millisecond, without requiring you to refocus the FakePaste window.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Does FakePaste support Unicode and special symbols?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              Yes! FakePaste seamlessly handles multi-line code blocks, punctuation, uppercase/lowercase shifts, indentation, tabs, and standard Unicode characters, preserving your exact formatting.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: DOWNLOAD & INSTALL -->
+    <section id="download" class="section-padding">
+      <div class="container">
+        <div class="download-grid">
+          <!-- Standalone Windows EXE Card -->
+          <div class="download-card">
+            <div>
+              <div class="download-badge-strip">
+                <span class="pill-badge">Release v1.0.0</span>
+                <span class="pill-badge" style="color: var(--accent-cyan); border-color: rgba(56, 189, 248, 0.3);">Windows 64-bit</span>
+              </div>
+
+              <h3 style="font-family: var(--font-display); font-size: 2rem; color: #fff; margin-bottom: 0.75rem;">
+                Get FakePaste for Windows
+              </h3>
+              <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6;">
+                Choose between the zero-install portable executable or the full Inno Setup Windows installer with desktop shortcuts.
+              </p>
+
+              <div class="download-action-btn-group">
+                <a href="https://github.com/SamSunny4/FakePaste/releases" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Download FakePaste.exe (Portable)</span>
+                </a>
+
+                <a href="https://github.com/SamSunny4/FakePaste/releases" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                  <span>Download Setup Installer (.exe)</span>
+                </a>
+              </div>
+            </div>
+
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border-hairline); padding-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+              MD5 verified · No adware · 100% Open Source MIT License
+            </div>
+          </div>
+
+          <!-- Build from Source Card -->
+          <div class="source-install-card">
+            <span class="section-tag">Developer Quickstart</span>
+            <h4 style="font-family: var(--font-display); font-size: 1.35rem; color: #fff; margin-bottom: 0.5rem;">
+              Run or Build from Source
+            </h4>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">
+              Requires Python 3.10+ and Windows. Clone and launch directly:
+            </p>
+
+            <div class="terminal-box">
+              <button class="terminal-copy-btn">Copy</button>
+              <code>git clone https://github.com/SamSunny4/FakePaste.git<br>cd FakePaste<br>pip install -r requirements.txt<br>python main.py</code>
+            </div>
+
+            <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--text-secondary);">
+              To build your own standalone EXE: <code>python build.py</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-link" style="margin-bottom: 1rem;">
+            <div class="brand-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="4"></rect>
+                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 16h8"></path>
+              </svg>
+            </div>
+            <span class="brand-text">FakePaste</span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 38ch; line-height: 1.6;">
+            The realistic human-like typing simulator for Windows. Designed for natural cadence, variable latency, and cognitive pause modeling.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#simulator">Interactive Studio</a></li>
+            <li><a href="#how-it-works">Neuromuscular Engine</a></li>
+            <li><a href="#comparison">Comparison Matrix</a></li>
+            <li><a href="#presets">Speed Presets</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Open Source</h4>
+          <ul class="footer-links">
+            <li><a href="https://github.com/SamSunny4/FakePaste" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/SamSunny4/FakePaste/releases" target="_blank" rel="noopener noreferrer">Releases &amp; Changelog</a></li>
+            <li><a href="https://github.com/SamSunny4/FakePaste/blob/main/README.md" target="_blank" rel="noopener noreferrer">Documentation</a></li>
+            <li><a href="https://github.com/SamSunny4/FakePaste/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 FakePaste. Open source software under the MIT License.</div>
+        <div>Built for Windows 10 &amp; 11 · Engineered with PyQt6 and pynput</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Script -->
+  <script src="./app.js"></script>
+</body>
+</html>
